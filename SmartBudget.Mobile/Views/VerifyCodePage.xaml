@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SmartBudget.Mobile.Views.VerifyCodePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:SmartBudget.Mobile.ViewModels"
+    x:DataType="vm:VerifyCodeViewModel"
+    Title="Verify Email">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16" VerticalOptions="Center">
+
+            <Label Text="Check your email" FontSize="26" FontAttributes="Bold" HorizontalOptions="Center" />
+            <Label Text="{Binding Email, StringFormat='We sent a 6-digit code to {0}'}"
+                   FontSize="14" TextColor="Gray" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+
+            <Entry Placeholder="6-digit code" Keyboard="Numeric" MaxLength="6"
+                   HorizontalTextAlignment="Center" FontSize="22" Text="{Binding Code}" />
+
+            <!-- DEV hint — remove once the real API is wired up -->
+            <Label Text="Dev tip: the code is 123456" FontSize="12" TextColor="DarkOrange" HorizontalOptions="Center" />
+
+            <Label Text="{Binding ErrorMessage}" TextColor="Red" HorizontalOptions="Center" />
+
+            <Button Text="Verify" Command="{Binding VerifyCommand}" IsEnabled="{Binding IsNotBusy}" />
+            <Button Text="Resend code" Command="{Binding ResendCommand}"
+                    BackgroundColor="Transparent" TextColor="{AppThemeBinding Light=#512BD4, Dark=#9277E0}" />
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

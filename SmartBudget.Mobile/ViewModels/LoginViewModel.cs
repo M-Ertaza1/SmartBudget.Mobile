@@ -50,4 +50,14 @@ public partial class LoginViewModel : BaseViewModel
             IsBusy = false;
         }
     }
+
+    [RelayCommand]
+    private async Task GoToForgotPasswordAsync()
+        => await Shell.Current.GoToAsync(nameof(Views.ForgotPasswordPage));
+
+    [RelayCommand]
+    private async Task GoToRegisterAsync()
+    {
+        await Shell.Current.GoToAsync(nameof(Views.RegisterPage));
+    }
 }

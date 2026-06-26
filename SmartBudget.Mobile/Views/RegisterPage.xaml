@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SmartBudget.Mobile.Views.RegisterPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:SmartBudget.Mobile.ViewModels"
+    x:DataType="vm:RegisterViewModel"
+    Title="Register">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16" VerticalOptions="Center">
+
+            <Label Text="Create your account" FontSize="26"
+                   FontAttributes="Bold" HorizontalOptions="Center" />
+            <Label Text="It only takes a minute" FontSize="14"
+                   TextColor="Gray" HorizontalOptions="Center" Margin="0,0,0,8" />
+
+            <Entry Placeholder="Full name" Text="{Binding FullName}" />
+            <Entry Placeholder="Email" Keyboard="Email" Text="{Binding Email}" />
+            <Entry Placeholder="Mobile number" Keyboard="Telephone" Text="{Binding Mobile}" />
+            <Entry Placeholder="Password" IsPassword="True" Text="{Binding Password}" />
+            <Entry Placeholder="Confirm password" IsPassword="True" Text="{Binding ConfirmPassword}" />
+            <Label Text="{Binding ErrorMessage}" TextColor="Red" />
+
+            <Button Text="Create account" Command="{Binding RegisterCommand}"
+                    IsEnabled="{Binding IsNotBusy}" />
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center" />
+
+            <Button Text="Already have an account? Sign in"
+                    Command="{Binding GoToLoginCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light=#512BD4, Dark=#9277E0}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>  

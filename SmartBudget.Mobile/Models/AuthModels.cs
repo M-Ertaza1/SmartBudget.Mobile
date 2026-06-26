@@ -28,3 +28,18 @@ public class UserSummary
     public string FullName { get; set; } = string.Empty;
     public string Plan { get; set; } = "free";
 }
+
+public class RegisterRequest
+{
+    public string FullName { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string Mobile { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+    public string ConfirmPassword { get; set; } = string.Empty;
+}
+
+public class RegisterResult
+{
+    public Guid UserId { get; set; }
+    public string Message { get; set; } = string.Empty;
+}

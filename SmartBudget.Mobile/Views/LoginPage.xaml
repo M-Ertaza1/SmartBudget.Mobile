@@ -24,6 +24,16 @@
             <Button Text="Login" Command="{Binding LoginCommand}"
                     IsEnabled="{Binding IsNotBusy}" />
 
+            <Button Text="Forgot password?"
+                    Command="{Binding GoToForgotPasswordCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light=#512BD4, Dark=#9277E0}" />
+
+            <Button Text="Don't have an account? Register"
+                    Command="{Binding GoToRegisterCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light=#512BD4, Dark=#9277E0}" />
+
             <ActivityIndicator IsRunning="{Binding IsBusy}"
                                IsVisible="{Binding IsBusy}"
                                HorizontalOptions="Center" />

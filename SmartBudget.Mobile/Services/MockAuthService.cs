@@ -8,6 +8,9 @@ namespace SmartBudget.Mobile.Services;
 // Swap to the real AuthService (one line in MauiProgram.cs) once the API is running.
 public class MockAuthService : IAuthService
 {
+    // DEV ONLY: the real API emails a random code. The mock accepts this fixed one.
+    private const string DevCode = "123456";
+
     public async Task<ApiResponse<AuthResult>> LoginAsync(string email, string password)
     {
         await Task.Delay(1000); // pretend we're calling a server
@@ -26,6 +29,59 @@ public class MockAuthService : IAuthService
         catch { /* SecureStorage can be flaky on some Windows setups; ignore for the mock */ }
 
         return new ApiResponse<AuthResult> { Success = true, Data = result };
+    }
+
+    public async Task<ApiResponse<RegisterResult>> RegisterAsync(RegisterRequest request)
+    {
+        await Task.Delay(1000); // simulate the API call
+
+        return new ApiResponse<RegisterResult>
+        {
+            Success = true,
+            Data = new RegisterResult
+            {
+                UserId = Guid.NewGuid(),
+                Message = "Verification email sent"
+            },
+            Message = "Verification email sent"
+        };
+    }
+
+    public async Task<ApiResponse<bool>> VerifyEmailAsync(string email, string code)
+    {
+        await Task.Delay(800);
+
+        if (code?.Trim() == DevCode)
+            return new ApiResponse<bool> { Success = true, Data = true, Message = "Email verified." };
+
+        return new ApiResponse<bool> { Success = false, Error = "Invalid or expired code." };
+    }
+
+    public async Task<ApiResponse<bool>> ResendCodeAsync(string email)
+    {
+        await Task.Delay(600);
+        return new ApiResponse<bool> { Success = true, Data = true, Message = "A new code has been sent." };
+    }
+
+    public async Task<ApiResponse<bool>> ForgotPasswordAsync(string email)
+    {
+        await Task.Delay(800);
+
+        if (string.IsNullOrWhiteSpace(email))
+            return new ApiResponse<bool> { Success = false, Error = "Please enter your email." };
+
+        // Real API responds the same whether or not the account exists (privacy).
+        return new ApiResponse<bool> { Success = true, Data = true, Message = "If that account exists, a reset code was sent." };
+    }
+
+    public async Task<ApiResponse<bool>> ResetPasswordAsync(string email, string code, string newPassword)
+    {
+        await Task.Delay(800);
+
+        if (code?.Trim() != DevCode)
+            return new ApiResponse<bool> { Success = false, Error = "Invalid or expired code." };
+
+        return new ApiResponse<bool> { Success = true, Data = true, Message = "Password reset successful." };
     }
 
     public async Task<bool> IsLoggedInAsync()

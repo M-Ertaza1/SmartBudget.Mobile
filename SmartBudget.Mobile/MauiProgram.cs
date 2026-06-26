@@ -34,6 +34,18 @@ namespace SmartBudget.Mobile
             // Views
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<DashboardPage>();
+
+            builder.Services.AddTransient<RegisterViewModel>();
+            builder.Services.AddTransient<RegisterPage>();
+
+            builder.Services.AddTransient<VerifyCodeViewModel>();
+            builder.Services.AddTransient<VerifyCodePage>();
+
+            builder.Services.AddTransient<ForgotPasswordViewModel>();
+            builder.Services.AddTransient<ForgotPasswordPage>();
+
+            builder.Services.AddTransient<ResetPasswordViewModel>();
+            builder.Services.AddTransient<ResetPasswordPage>();
 #endif
 
             return builder.Build();
