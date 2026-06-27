@@ -14,4 +14,7 @@ public static class Constants
 
     public const string AuthTokenKey = "auth_token";
     public const string UserIdKey = "user_id";
+
+    public const string SalaryDayKey = "salary_day";
+    public const string CurrencySymbol = "Rs ";   // change to "$", "₹", "£" etc. as you like
 }

@@ -3,11 +3,75 @@
     x:Class="SmartBudget.Mobile.Views.DashboardPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:SmartBudget.Mobile.ViewModels"
+    x:DataType="vm:DashboardViewModel"
     Title="Dashboard">
 
-    <VerticalStackLayout Padding="24" Spacing="16" VerticalOptions="Center">
-        <Label Text="Welcome! 🎉" FontSize="32" HorizontalOptions="Center" />
-        <Label Text="You're logged in. The real dashboard comes next."
-               HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="18">
+
+            <!-- ===== SETUP CARD (first run only) ===== -->
+            <Border IsVisible="{Binding HasSalaryDay, Converter={x:Static vm:InverseBoolConverter.Instance}}"
+                    Stroke="#E0E0E0" StrokeThickness="1" Padding="20"
+                    StrokeShape="RoundRectangle 14">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Set your salary day" FontSize="20" FontAttributes="Bold" />
+                    <Label Text="Which day of the month do you get paid? Your whole budget cycle is built from this."
+                           FontSize="13" TextColor="Gray" />
+                    <Picker Title="Select day (1–31)"
+                            ItemsSource="{Binding Days}"
+                            SelectedItem="{Binding SelectedSalaryDay}" />
+                    <Button Text="Save and continue" Command="{Binding SaveSalaryDayCommand}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- ===== DASHBOARD (after salary day is set) ===== -->
+            <VerticalStackLayout IsVisible="{Binding HasSalaryDay}" Spacing="18">
+
+                <Label Text="Current cycle" FontSize="14" TextColor="Gray" />
+                <Label Text="{Binding CycleRange}" FontSize="22" FontAttributes="Bold" />
+
+                <!-- Balance card -->
+                <Border Stroke="#512BD4" StrokeThickness="1" Padding="20"
+                        StrokeShape="RoundRectangle 14" BackgroundColor="#F4F1FB">
+                    <VerticalStackLayout>
+                        <Label Text="Remaining balance" FontSize="14" TextColor="#512BD4" />
+                        <Label Text="{Binding BalanceText}" FontSize="34" FontAttributes="Bold" TextColor="#512BD4" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Income / Expenses row -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <Border Grid.Column="0" Stroke="#E0E0E0" StrokeThickness="1" Padding="16"
+                            StrokeShape="RoundRectangle 14">
+                        <VerticalStackLayout>
+                            <Label Text="Income" FontSize="13" TextColor="Gray" />
+                            <Label Text="{Binding IncomeText}" FontSize="20" FontAttributes="Bold" TextColor="Green" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="1" Stroke="#E0E0E0" StrokeThickness="1" Padding="16"
+                            StrokeShape="RoundRectangle 14">
+                        <VerticalStackLayout>
+                            <Label Text="Expenses" FontSize="13" TextColor="Gray" />
+                            <Label Text="{Binding ExpensesText}" FontSize="20" FontAttributes="Bold" TextColor="#D7263D" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- Quick actions (wired next slice) -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,4,0,0">
+                    <Button Grid.Column="0" Text="+ Add Income"
+                            Command="{Binding ComingSoonCommand}" CommandParameter="Add Income" />
+                    <Button Grid.Column="1" Text="+ Add Expense"
+                            Command="{Binding ComingSoonCommand}" CommandParameter="Add Expense" />
+                </Grid>
+
+                <Button Text="Log out" Command="{Binding LogoutCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="{AppThemeBinding Light=#512BD4, Dark=#9277E0}" Margin="0,8,0,0" />
+            </VerticalStackLayout>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

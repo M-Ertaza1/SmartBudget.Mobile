@@ -46,6 +46,9 @@ namespace SmartBudget.Mobile
 
             builder.Services.AddTransient<ResetPasswordViewModel>();
             builder.Services.AddTransient<ResetPasswordPage>();
+
+            builder.Services.AddSingleton<ICycleService, MockCycleService>();
+            builder.Services.AddTransient<DashboardViewModel>();
 #endif
 
             return builder.Build();
