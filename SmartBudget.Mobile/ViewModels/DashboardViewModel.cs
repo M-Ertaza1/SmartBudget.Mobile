@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SmartBudget.Mobile.Helpers;
+using SmartBudget.Mobile.Models;
 using SmartBudget.Mobile.Services.Interfaces;
 using SmartBudget.Mobile.Views;
 
@@ -11,6 +12,8 @@ public partial class DashboardViewModel : BaseViewModel
 {
     private readonly ICycleService _cycleService;
     private readonly IAuthService _authService;
+    private readonly IExpenseService _expenseService;
+    private readonly IIncomeService _incomeService;
 
     [ObservableProperty] private bool hasSalaryDay;
     [ObservableProperty] private int selectedSalaryDay = 1;
@@ -33,11 +36,15 @@ public partial class DashboardViewModel : BaseViewModel
     public string BalanceText => $"{Constants.CurrencySymbol}{Balance:N0}";
 
     public ObservableCollection<int> Days { get; } = new(Enumerable.Range(1, 31));
+    public ObservableCollection<Expense> Expenses { get; } = new();
 
-    public DashboardViewModel(ICycleService cycleService, IAuthService authService)
+    public DashboardViewModel(ICycleService cycleService, IAuthService authService,
+                              IExpenseService expenseService, IIncomeService incomeService)
     {
         _cycleService = cycleService;
         _authService = authService;
+        _expenseService = expenseService;
+        _incomeService = incomeService;
         Title = "Dashboard";
     }
 
@@ -57,9 +64,18 @@ public partial class DashboardViewModel : BaseViewModel
 
             var summary = await _cycleService.GetActiveCycleAsync(salaryDay);
             CycleRange = $"{summary.StartDate:dd MMM} – {summary.EndDate:dd MMM yyyy}";
-            TotalIncome = summary.TotalIncome;
-            TotalExpenses = summary.TotalExpenses;
-            Balance = summary.Balance;
+
+            // Real expenses you've added, on top of the mocked baseline total.
+            var added = await _expenseService.GetExpensesAsync();
+            Expenses.Clear();
+            foreach (var e in added) Expenses.Add(e);
+
+            var addedExpenseTotal = await _expenseService.GetTotalAsync();
+            var addedIncomeTotal = await _incomeService.GetTotalAsync();
+
+            TotalIncome = summary.TotalIncome + addedIncomeTotal;
+            TotalExpenses = summary.TotalExpenses + addedExpenseTotal;
+            Balance = TotalIncome - TotalExpenses;
         }
         finally { IsBusy = false; }
     }
@@ -73,8 +89,12 @@ public partial class DashboardViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private async Task ComingSoonAsync(string feature)
-        => await Shell.Current.DisplayAlert(feature, "This screen is coming next.", "OK");
+    private async Task AddExpenseAsync()
+        => await Shell.Current.GoToAsync(nameof(Views.AddExpensePage));
+
+    [RelayCommand]
+    private async Task AddIncomeAsync()
+        => await Shell.Current.GoToAsync(nameof(Views.AddIncomePage));
 
     [RelayCommand]
     private async Task LogoutAsync()

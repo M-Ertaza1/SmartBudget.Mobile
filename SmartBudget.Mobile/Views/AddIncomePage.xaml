@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SmartBudget.Mobile.Views.AddIncomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:SmartBudget.Mobile.ViewModels"
+    x:DataType="vm:AddIncomeViewModel"
+    Title="Add Income">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+
+            <Label Text="Amount" FontSize="13" TextColor="Gray" />
+            <Entry Placeholder="0.00" Keyboard="Numeric" Text="{Binding Amount}" FontSize="22" />
+
+            <Label Text="Source" FontSize="13" TextColor="Gray" />
+            <Entry Placeholder="e.g. Salary, Freelance, Bonus" Text="{Binding Source}" />
+
+            <Label Text="Date" FontSize="13" TextColor="Gray" />
+            <DatePicker Date="{Binding IncomeDate}" MaximumDate="{Binding MaxDate}" />
+
+            <Label Text="Notes (optional)" FontSize="13" TextColor="Gray" />
+            <Entry Placeholder="Optional notes" Text="{Binding Notes}" />
+
+            <Label Text="{Binding ErrorMessage}" TextColor="Red" />
+
+            <Button Text="Save income" Command="{Binding SaveCommand}" IsEnabled="{Binding IsNotBusy}" />
+            <Button Text="Cancel" Command="{Binding CancelCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light=#512BD4, Dark=#9277E0}" />
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

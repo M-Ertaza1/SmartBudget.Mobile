@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="SmartBudget.API/SmartBudget.API.csproj" Id="23eea14c-7928-4a2d-927f-04084c03238c" />
   <Project Path="SmartBudget.Mobile/SmartBudget.Mobile.csproj" />
 </Solution>

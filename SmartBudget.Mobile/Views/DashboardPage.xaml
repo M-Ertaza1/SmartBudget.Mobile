@@ -4,74 +4,103 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:SmartBudget.Mobile.ViewModels"
+    xmlns:models="clr-namespace:SmartBudget.Mobile.Models"
     x:DataType="vm:DashboardViewModel"
     Title="Dashboard">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="18">
+    <Grid>
 
-            <!-- ===== SETUP CARD (first run only) ===== -->
-            <Border IsVisible="{Binding HasSalaryDay, Converter={x:Static vm:InverseBoolConverter.Instance}}"
-                    Stroke="#E0E0E0" StrokeThickness="1" Padding="20"
-                    StrokeShape="RoundRectangle 14">
-                <VerticalStackLayout Spacing="12">
-                    <Label Text="Set your salary day" FontSize="20" FontAttributes="Bold" />
-                    <Label Text="Which day of the month do you get paid? Your whole budget cycle is built from this."
-                           FontSize="13" TextColor="Gray" />
-                    <Picker Title="Select day (1–31)"
-                            ItemsSource="{Binding Days}"
-                            SelectedItem="{Binding SelectedSalaryDay}" />
-                    <Button Text="Save and continue" Command="{Binding SaveSalaryDayCommand}" />
+        <!-- ===== SETUP CARD (first run only) ===== -->
+        <Border IsVisible="{Binding HasSalaryDay, Converter={x:Static vm:InverseBoolConverter.Instance}}"
+                Margin="20" Stroke="#E0E0E0" StrokeThickness="1" Padding="20"
+                StrokeShape="RoundRectangle 14" VerticalOptions="Start">
+            <VerticalStackLayout Spacing="12">
+                <Label Text="Set your salary day" FontSize="20" FontAttributes="Bold" />
+                <Label Text="Which day of the month do you get paid? Your whole budget cycle is built from this."
+                       FontSize="13" TextColor="Gray" />
+                <Picker Title="Select day (1–31)"
+                        ItemsSource="{Binding Days}"
+                        SelectedItem="{Binding SelectedSalaryDay}" />
+                <Button Text="Save and continue" Command="{Binding SaveSalaryDayCommand}" />
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- ===== DASHBOARD (after salary day is set) ===== -->
+        <Grid IsVisible="{Binding HasSalaryDay}"
+              RowDefinitions="Auto,Auto,Auto,Auto,*,Auto"
+              Padding="20" RowSpacing="14">
+
+            <!-- Row 0: cycle -->
+            <VerticalStackLayout Grid.Row="0">
+                <Label Text="Current cycle" FontSize="14" TextColor="Gray" />
+                <Label Text="{Binding CycleRange}" FontSize="22" FontAttributes="Bold" />
+            </VerticalStackLayout>
+
+            <!-- Row 1: balance -->
+            <Border Grid.Row="1" Stroke="#512BD4" StrokeThickness="1" Padding="20"
+                    StrokeShape="RoundRectangle 14" BackgroundColor="#F4F1FB">
+                <VerticalStackLayout>
+                    <Label Text="Remaining balance" FontSize="14" TextColor="#512BD4" />
+                    <Label Text="{Binding BalanceText}" FontSize="34" FontAttributes="Bold" TextColor="#512BD4" />
                 </VerticalStackLayout>
             </Border>
 
-            <!-- ===== DASHBOARD (after salary day is set) ===== -->
-            <VerticalStackLayout IsVisible="{Binding HasSalaryDay}" Spacing="18">
-
-                <Label Text="Current cycle" FontSize="14" TextColor="Gray" />
-                <Label Text="{Binding CycleRange}" FontSize="22" FontAttributes="Bold" />
-
-                <!-- Balance card -->
-                <Border Stroke="#512BD4" StrokeThickness="1" Padding="20"
-                        StrokeShape="RoundRectangle 14" BackgroundColor="#F4F1FB">
+            <!-- Row 2: income / expenses -->
+            <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Border Grid.Column="0" Stroke="#E0E0E0" StrokeThickness="1" Padding="16" StrokeShape="RoundRectangle 14">
                     <VerticalStackLayout>
-                        <Label Text="Remaining balance" FontSize="14" TextColor="#512BD4" />
-                        <Label Text="{Binding BalanceText}" FontSize="34" FontAttributes="Bold" TextColor="#512BD4" />
+                        <Label Text="Income" FontSize="13" TextColor="Gray" />
+                        <Label Text="{Binding IncomeText}" FontSize="20" FontAttributes="Bold" TextColor="Green" />
                     </VerticalStackLayout>
                 </Border>
+                <Border Grid.Column="1" Stroke="#E0E0E0" StrokeThickness="1" Padding="16" StrokeShape="RoundRectangle 14">
+                    <VerticalStackLayout>
+                        <Label Text="Expenses" FontSize="13" TextColor="Gray" />
+                        <Label Text="{Binding ExpensesText}" FontSize="20" FontAttributes="Bold" TextColor="#D7263D" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
 
-                <!-- Income / Expenses row -->
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                    <Border Grid.Column="0" Stroke="#E0E0E0" StrokeThickness="1" Padding="16"
-                            StrokeShape="RoundRectangle 14">
-                        <VerticalStackLayout>
-                            <Label Text="Income" FontSize="13" TextColor="Gray" />
-                            <Label Text="{Binding IncomeText}" FontSize="20" FontAttributes="Bold" TextColor="Green" />
-                        </VerticalStackLayout>
-                    </Border>
-                    <Border Grid.Column="1" Stroke="#E0E0E0" StrokeThickness="1" Padding="16"
-                            StrokeShape="RoundRectangle 14">
-                        <VerticalStackLayout>
-                            <Label Text="Expenses" FontSize="13" TextColor="Gray" />
-                            <Label Text="{Binding ExpensesText}" FontSize="20" FontAttributes="Bold" TextColor="#D7263D" />
-                        </VerticalStackLayout>
-                    </Border>
-                </Grid>
+            <!-- Row 3: quick actions -->
+            <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button Grid.Column="0" Text="+ Add Income"
+                        Command="{Binding AddIncomeCommand}" />
+                <Button Grid.Column="1" Text="+ Add Expense"
+                        Command="{Binding AddExpenseCommand}" />
+            </Grid>
 
-                <!-- Quick actions (wired next slice) -->
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,4,0,0">
-                    <Button Grid.Column="0" Text="+ Add Income"
-                            Command="{Binding ComingSoonCommand}" CommandParameter="Add Income" />
-                    <Button Grid.Column="1" Text="+ Add Expense"
-                            Command="{Binding ComingSoonCommand}" CommandParameter="Add Expense" />
-                </Grid>
+            <!-- Row 4: expense list (fills remaining space, scrolls on its own) -->
+            <CollectionView Grid.Row="4" ItemsSource="{Binding Expenses}" Margin="0,4,0,0">
+                <CollectionView.Header>
+                    <Label Text="Recent expenses" FontSize="16" FontAttributes="Bold" Margin="0,4" />
+                </CollectionView.Header>
+                <CollectionView.EmptyView>
+                    <Label Text="No expenses yet. Tap + Add Expense to start."
+                           TextColor="Gray" HorizontalOptions="Center" Margin="0,20" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Expense">
+                        <Grid Padding="4,10" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <BoxView Grid.Column="0" WidthRequest="6" CornerRadius="3" Color="{Binding CategoryColor}" />
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="{Binding CategoryName}" FontAttributes="Bold" />
+                                <Label Text="{Binding Description}" FontSize="12" TextColor="Gray" />
+                                <Label Text="{Binding ExpenseDate, StringFormat='{0:dd MMM yyyy}'}" FontSize="11" TextColor="Gray" />
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="{Binding Amount, StringFormat='Rs {0:N0}'}"
+                                   FontAttributes="Bold" TextColor="#D7263D" VerticalOptions="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
-                <Button Text="Log out" Command="{Binding LogoutCommand}"
-                        BackgroundColor="Transparent"
-                        TextColor="{AppThemeBinding Light=#512BD4, Dark=#9277E0}" Margin="0,8,0,0" />
-            </VerticalStackLayout>
+            <!-- Row 5: log out -->
+            <Button Grid.Row="5" Text="Log out" Command="{Binding LogoutCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light=#512BD4, Dark=#9277E0}" />
+        </Grid>
 
-            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" />
-        </VerticalStackLayout>
-    </ScrollView>
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+    </Grid>
 </ContentPage>
