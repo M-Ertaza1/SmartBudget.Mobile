@@ -1,6 +1,5 @@
 ﻿namespace SmartBudget.Mobile.Models;
 
-// Matches the API's response envelope: { success, data, error, message }
 public class ApiResponse<T>
 {
     public bool Success { get; set; }
@@ -15,6 +14,16 @@ public class LoginRequest
     public string Password { get; set; } = string.Empty;
 }
 
+public class RegisterRequest
+{
+    public string FullName { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string Mobile { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+    public string ConfirmPassword { get; set; } = string.Empty;
+    public int SalaryDay { get; set; }
+}
+
 public class AuthResult
 {
     public string Token { get; set; } = string.Empty;
@@ -26,16 +35,9 @@ public class UserSummary
 {
     public Guid UserId { get; set; }
     public string FullName { get; set; } = string.Empty;
-    public string Plan { get; set; } = "free";
-}
-
-public class RegisterRequest
-{
-    public string FullName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
-    public string Mobile { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-    public string ConfirmPassword { get; set; } = string.Empty;
+    public string Plan { get; set; } = "free";
+    public int SalaryDay { get; set; }
 }
 
 public class RegisterResult

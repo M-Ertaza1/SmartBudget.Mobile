@@ -20,6 +20,10 @@
             <Entry Placeholder="Mobile number" Keyboard="Telephone" Text="{Binding Mobile}" />
             <Entry Placeholder="Password" IsPassword="True" Text="{Binding Password}" />
             <Entry Placeholder="Confirm password" IsPassword="True" Text="{Binding ConfirmPassword}" />
+            <Picker Title="Salary day (1–31)"
+                    ItemsSource="{Binding Days}"
+                    SelectedItem="{Binding SalaryDay}" />
+
             <Label Text="{Binding ErrorMessage}" TextColor="Red" />
 
             <Button Text="Create account" Command="{Binding RegisterCommand}"
@@ -35,4 +39,4 @@
                     TextColor="{AppThemeBinding Light=#512BD4, Dark=#9277E0}" />
         </VerticalStackLayout>
     </ScrollView>
-</ContentPage>  
+</ContentPage>

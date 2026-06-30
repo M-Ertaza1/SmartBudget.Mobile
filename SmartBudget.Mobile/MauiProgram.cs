@@ -23,7 +23,8 @@ namespace SmartBudget.Mobile
                 });
 
             // ===== Services =====
-            builder.Services.AddSingleton<IAuthService, MockAuthService>(); // TODO: swap to real AuthService when API is ready
+            builder.Services.AddSingleton<IAuthService, ApiAuthService>();
+            builder.Services.AddSingleton(new HttpClient()); // TODO: swap to real AuthService when API is ready
             builder.Services.AddSingleton<ICycleService, MockCycleService>();
             builder.Services.AddSingleton<IExpenseService, MockExpenseService>();
 

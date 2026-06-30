@@ -16,6 +16,9 @@ public partial class RegisterViewModel : BaseViewModel
     [ObservableProperty] private string password = string.Empty;
     [ObservableProperty] private string confirmPassword = string.Empty;
     [ObservableProperty] private string? errorMessage;
+    [ObservableProperty] private int salaryDay = 1;
+
+    public int[] Days { get; } = Enumerable.Range(1, 31).ToArray();
 
     public RegisterViewModel(IAuthService authService)
     {
@@ -42,7 +45,8 @@ public partial class RegisterViewModel : BaseViewModel
                 Email = Email.Trim(),
                 Mobile = Mobile.Trim(),
                 Password = Password,
-                ConfirmPassword = ConfirmPassword
+                ConfirmPassword = ConfirmPassword,
+                SalaryDay = SalaryDay
             };
 
             var response = await _authService.RegisterAsync(request);
