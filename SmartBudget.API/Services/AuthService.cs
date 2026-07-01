@@ -12,6 +12,7 @@ public interface IAuthService
     Task<ApiResponse<RegisterResultDto>> RegisterAsync(RegisterDto dto);
     Task<ApiResponse<bool>> VerifyEmailAsync(VerifyEmailDto dto);
     Task<ApiResponse<TokenResponseDto>> LoginAsync(LoginDto dto);
+    Task<ApiResponse<UserSummaryDto>> GetMeAsync(Guid userId);
 }
 
 public class AuthService : IAuthService
@@ -80,7 +81,6 @@ public class AuthService : IAuthService
         _db.BudgetCycles.Add(cycle);
         await _db.SaveChangesAsync();
 
-        // No SMTP yet — log the code so you can grab it during development.
         _logger.LogWarning("DEV VERIFICATION CODE for {Email}: {Code}", email, code);
 
         return ApiResponse<RegisterResultDto>.Ok(
@@ -133,6 +133,25 @@ public class AuthService : IAuthService
                 Plan = plan,
                 SalaryDay = user.SalaryDay
             }
+        });
+    }
+
+    public async Task<ApiResponse<UserSummaryDto>> GetMeAsync(Guid userId)
+    {
+        var user = await _db.Users
+            .Include(u => u.Subscription)
+            .FirstOrDefaultAsync(u => u.UserId == userId);
+
+        if (user is null)
+            return ApiResponse<UserSummaryDto>.Fail("User not found.");
+
+        return ApiResponse<UserSummaryDto>.Ok(new UserSummaryDto
+        {
+            UserId = user.UserId,
+            FullName = user.FullName,
+            Email = user.Email,
+            Plan = user.Subscription?.Plan ?? "free",
+            SalaryDay = user.SalaryDay
         });
     }
 }

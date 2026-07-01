@@ -10,24 +10,8 @@
 
     <Grid>
 
-        <!-- ===== SETUP CARD (first run only) ===== -->
-        <Border IsVisible="{Binding HasSalaryDay, Converter={x:Static vm:InverseBoolConverter.Instance}}"
-                Margin="20" Stroke="#E0E0E0" StrokeThickness="1" Padding="20"
-                StrokeShape="RoundRectangle 14" VerticalOptions="Start">
-            <VerticalStackLayout Spacing="12">
-                <Label Text="Set your salary day" FontSize="20" FontAttributes="Bold" />
-                <Label Text="Which day of the month do you get paid? Your whole budget cycle is built from this."
-                       FontSize="13" TextColor="Gray" />
-                <Picker Title="Select day (1–31)"
-                        ItemsSource="{Binding Days}"
-                        SelectedItem="{Binding SelectedSalaryDay}" />
-                <Button Text="Save and continue" Command="{Binding SaveSalaryDayCommand}" />
-            </VerticalStackLayout>
-        </Border>
-
-        <!-- ===== DASHBOARD (after salary day is set) ===== -->
-        <Grid IsVisible="{Binding HasSalaryDay}"
-              RowDefinitions="Auto,Auto,Auto,Auto,*,Auto"
+        <!-- ===== DASHBOARD ===== -->
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto,*,Auto"
               Padding="20" RowSpacing="14">
 
             <!-- Row 0: cycle -->
@@ -69,7 +53,7 @@
                         Command="{Binding AddExpenseCommand}" />
             </Grid>
 
-            <!-- Row 4: expense list (fills remaining space, scrolls on its own) -->
+            <!-- Row 4: expense list -->
             <CollectionView Grid.Row="4" ItemsSource="{Binding Expenses}" Margin="0,4,0,0">
                 <CollectionView.Header>
                     <Label Text="Recent expenses" FontSize="16" FontAttributes="Bold" Margin="0,4" />

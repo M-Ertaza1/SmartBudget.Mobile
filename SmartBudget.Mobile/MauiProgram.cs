@@ -22,11 +22,19 @@ namespace SmartBudget.Mobile
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            // ===== HttpClient (auto-attaches JWT, points at the API) =====
+            builder.Services.AddTransient<AuthHeaderHandler>();
+            builder.Services.AddHttpClient("api", client =>
+            {
+                client.BaseAddress = new Uri(Constants.BaseUrl);
+            }).AddHttpMessageHandler<AuthHeaderHandler>();
+
             // ===== Services =====
             builder.Services.AddSingleton<IAuthService, ApiAuthService>();
-            builder.Services.AddSingleton(new HttpClient()); // TODO: swap to real AuthService when API is ready
-            builder.Services.AddSingleton<ICycleService, MockCycleService>();
-            builder.Services.AddSingleton<IExpenseService, MockExpenseService>();
+            builder.Services.AddSingleton<ICycleService, ApiCycleService>();
+
+            builder.Services.AddSingleton<IExpenseService, MockExpenseService>(); // still mock
+            builder.Services.AddSingleton<IIncomeService, MockIncomeService>();   // still mock
 
             // ===== ViewModels =====
             builder.Services.AddTransient<LoginViewModel>();
@@ -36,6 +44,7 @@ namespace SmartBudget.Mobile
             builder.Services.AddTransient<ResetPasswordViewModel>();
             builder.Services.AddTransient<DashboardViewModel>();
             builder.Services.AddTransient<AddExpenseViewModel>();
+            builder.Services.AddTransient<AddIncomeViewModel>();
 
             // ===== Views =====
             builder.Services.AddTransient<LoginPage>();
@@ -45,8 +54,6 @@ namespace SmartBudget.Mobile
             builder.Services.AddTransient<ResetPasswordPage>();
             builder.Services.AddTransient<DashboardPage>();
             builder.Services.AddTransient<AddExpensePage>();
-            builder.Services.AddSingleton<IIncomeService, MockIncomeService>();
-            builder.Services.AddTransient<AddIncomeViewModel>();
             builder.Services.AddTransient<AddIncomePage>();
 
 #if DEBUG

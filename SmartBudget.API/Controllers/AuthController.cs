@@ -1,4 +1,6 @@
-﻿using FluentValidation;
+﻿using System.Security.Claims;
+using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartBudget.API.Common;
 using SmartBudget.API.DTOs.Auth;
@@ -43,5 +45,17 @@ public class AuthController : ControllerBase
     {
         var result = await _auth.LoginAsync(dto);
         return result.Success ? Ok(result) : Unauthorized(result);
+    }
+
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<IActionResult> Me()
+    {
+        var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(idClaim, out var userId))
+            return Unauthorized(ApiResponse<object>.Fail("Invalid token."));
+
+        var result = await _auth.GetMeAsync(userId);
+        return result.Success ? Ok(result) : NotFound(result);
     }
 }

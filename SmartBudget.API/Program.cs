@@ -44,6 +44,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 // Validation
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterDtoValidator>();
 
+builder.Services.AddScoped<ICycleService, CycleService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -52,7 +54,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

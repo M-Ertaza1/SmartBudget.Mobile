@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Net.Http;
 using System.Text.Json;
 using SmartBudget.Mobile.Helpers;
 using SmartBudget.Mobile.Models;
@@ -14,10 +15,9 @@ public class ApiAuthService : IAuthService
         PropertyNameCaseInsensitive = true
     };
 
-    public ApiAuthService(HttpClient http)
+    public ApiAuthService(IHttpClientFactory httpFactory)
     {
-        _http = http;
-        _http.BaseAddress = new Uri(Constants.BaseUrl);
+        _http = httpFactory.CreateClient("api");
     }
 
     public async Task<ApiResponse<AuthResult>> LoginAsync(string email, string password)

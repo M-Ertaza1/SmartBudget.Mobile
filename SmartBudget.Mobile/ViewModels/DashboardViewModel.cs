@@ -15,8 +15,6 @@ public partial class DashboardViewModel : BaseViewModel
     private readonly IExpenseService _expenseService;
     private readonly IIncomeService _incomeService;
 
-    [ObservableProperty] private bool hasSalaryDay;
-    [ObservableProperty] private int selectedSalaryDay = 1;
     [ObservableProperty] private string cycleRange = string.Empty;
 
     [ObservableProperty]
@@ -35,7 +33,6 @@ public partial class DashboardViewModel : BaseViewModel
     public string ExpensesText => $"{Constants.CurrencySymbol}{TotalExpenses:N0}";
     public string BalanceText => $"{Constants.CurrencySymbol}{Balance:N0}";
 
-    public ObservableCollection<int> Days { get; } = new(Enumerable.Range(1, 31));
     public ObservableCollection<Expense> Expenses { get; } = new();
 
     public DashboardViewModel(ICycleService cycleService, IAuthService authService,
@@ -56,36 +53,20 @@ public partial class DashboardViewModel : BaseViewModel
         {
             IsBusy = true;
 
-            int salaryDay = Preferences.Default.Get(Constants.SalaryDayKey, 0);
-            HasSalaryDay = salaryDay is >= 1 and <= 31;
-
-            if (!HasSalaryDay)
-                return; // show the setup card instead
-
-            var summary = await _cycleService.GetActiveCycleAsync(salaryDay);
+            // Cycle + totals now come from the API (salaryDay arg is ignored server-side).
+            var summary = await _cycleService.GetActiveCycleAsync(0);
             CycleRange = $"{summary.StartDate:dd MMM} – {summary.EndDate:dd MMM yyyy}";
 
-            // Real expenses you've added, on top of the mocked baseline total.
+            TotalIncome = summary.TotalIncome;
+            TotalExpenses = summary.TotalExpenses;
+            Balance = summary.Balance;
+
+            // Expenses list still comes from the mock for now (replaced next step).
             var added = await _expenseService.GetExpensesAsync();
             Expenses.Clear();
             foreach (var e in added) Expenses.Add(e);
-
-            var addedExpenseTotal = await _expenseService.GetTotalAsync();
-            var addedIncomeTotal = await _incomeService.GetTotalAsync();
-
-            TotalIncome = summary.TotalIncome + addedIncomeTotal;
-            TotalExpenses = summary.TotalExpenses + addedExpenseTotal;
-            Balance = TotalIncome - TotalExpenses;
         }
         finally { IsBusy = false; }
-    }
-
-    [RelayCommand]
-    private async Task SaveSalaryDayAsync()
-    {
-        Preferences.Default.Set(Constants.SalaryDayKey, SelectedSalaryDay);
-        HasSalaryDay = true;
-        await LoadAsync();
     }
 
     [RelayCommand]
@@ -100,7 +81,6 @@ public partial class DashboardViewModel : BaseViewModel
     private async Task LogoutAsync()
     {
         await _authService.LogoutAsync();
-        Preferences.Default.Remove(Constants.SalaryDayKey); // reset so you can re-test the setup card
         await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
     }
 }

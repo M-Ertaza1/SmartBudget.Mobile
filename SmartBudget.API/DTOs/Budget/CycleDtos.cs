@@ -1,6 +1,6 @@
-﻿namespace SmartBudget.Mobile.Models;
+﻿namespace SmartBudget.API.DTOs.Budget;
 
-public class CycleSummary
+public class CycleSummaryDto
 {
     public Guid CycleId { get; set; }
     public DateOnly StartDate { get; set; }
