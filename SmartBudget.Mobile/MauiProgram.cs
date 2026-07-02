@@ -33,7 +33,8 @@ namespace SmartBudget.Mobile
             builder.Services.AddSingleton<IAuthService, ApiAuthService>();
             builder.Services.AddSingleton<ICycleService, ApiCycleService>();
 
-            builder.Services.AddSingleton<IExpenseService, MockExpenseService>(); // still mock
+            builder.Services.AddSingleton<IExpenseService, ApiExpenseService>();
+
             builder.Services.AddSingleton<IIncomeService, MockIncomeService>();   // still mock
 
             // ===== ViewModels =====

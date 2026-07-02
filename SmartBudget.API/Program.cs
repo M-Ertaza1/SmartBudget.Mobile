@@ -46,6 +46,8 @@ builder.Services.AddValidatorsFromAssemblyContaining<RegisterDtoValidator>();
 
 builder.Services.AddScoped<ICycleService, CycleService>();
 
+builder.Services.AddScoped<IExpenseService, ExpenseService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
